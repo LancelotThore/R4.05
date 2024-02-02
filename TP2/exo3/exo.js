@@ -78,6 +78,12 @@ moonMesh.scale.set(.5, .5, .5);
 moonOrbit.add(moonMesh);
 objects.push(moonMesh);
 
+const torusGeometry = new THREE.TorusGeometry( 10, 0.1, 30, 200 ); 
+const torusMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } ); 
+const torus = new THREE.Mesh( torusGeometry, torusMaterial );
+torus.rotation.set(Math.PI * 0.5 , 0, 0);
+scene.add( torus );
+
 // Camera
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight);
 camera.position.set(0, 50, 0);
