@@ -136,8 +136,8 @@ const loop = () => {
     earthOrbit.rotateY(obj.vitesse);
     moonMesh.visible = obj.lune;
     moonMesh.rotateY(obj.vitesse);
-    scene.add(new THREE.AxesHelper(15));
-    scene.add(new THREE.PointLightHelper(light));
+    //scene.add(new THREE.AxesHelper(15));
+    //scene.add(new THREE.PointLightHelper(light));
     grille.visible = obj.grille;
     stats.update();
 }
