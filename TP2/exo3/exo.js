@@ -170,7 +170,7 @@ scene.add( jupiterTorus );
 // Saturne
 const saturneMaterial = new THREE.MeshPhongMaterial({
     emissive: 0xFFFF00,
-    emissiveMap: new THREE.TextureLoader().load('./images/saturne.jpg'),
+    emissiveMap: new THREE.TextureLoader().load('./images/saturn.jpg'),
     emissiveIntensity: 1
 });
 
