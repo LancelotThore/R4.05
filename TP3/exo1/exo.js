@@ -26,15 +26,18 @@ const objects = [];
 
 // plane
 const geometry = new THREE.PlaneGeometry( 10, 10 );
-const material = new THREE.MeshBasicMaterial( {color: 0x009f00, side: THREE.DoubleSide} );
+const material = new THREE.MeshBasicMaterial( {color: 0xFFBBAC, side: THREE.DoubleSide} );
 const plane = new THREE.Mesh( geometry, material );
 plane.rotation.set(Math.PI * 0.5 , 0, 0);
+plane.receiveShadow = true;
 scene.add( plane );
 
 const geometryBox = new THREE.BoxGeometry( 2, 5, 1 );
-const materialBox = new THREE.MeshBasicMaterial( {color: 0x494ff, side: THREE.DoubleSide} );
+const materialBox = new THREE.MeshBasicMaterial( {color: 0xACFBFF, side: THREE.DoubleSide} );
 const box = new THREE.Mesh( geometryBox, materialBox );
 box.translateY(3)
+box.castShadow = true;
+box.receiveShadow = false;
 scene.add( box );
 
 // Camera
@@ -43,8 +46,8 @@ camera.position.set(0, 50, 0);
 camera.up.set(0, 0, 1);
 camera.lookAt(0, 0, 0);
 
-const grille = new THREE.GridHelper(25, 25);
-scene.add(grille);
+// const grille = new THREE.GridHelper(25, 25);
+// scene.add(grille);
 
 // Renderer
 const canvas = document.querySelector(".webgl");
@@ -62,11 +65,25 @@ window.addEventListener('resize', () => {
     renderer.render(scene, camera);
 });
 
-let light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+const light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
 light.position.set(50, 100, 10);
 light.target.position.set(0, 0, 0);
+light.castShadow = true;
 scene.add(light);
 scene.add(new THREE.DirectionalLightHelper(light));
+
+light.shadow.bias = -0.001;
+light.shadow.mapSize.width = 2048;
+light.shadow.mapSize.height = 2048;
+light.shadow.camera.near = 50;
+light.shadow.camera.far = 150;
+light.shadow.camera.left = 100;
+light.shadow.camera.right = -100;
+light.shadow.camera.top = 100;
+light.shadow.camera.bottom = -100;
+
+const shadowHelper = new THREE.CameraHelper( light.shadow.camera );
+scene.add( shadowHelper );
 
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
