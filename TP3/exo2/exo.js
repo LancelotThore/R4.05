@@ -25,6 +25,23 @@ scene.background = new THREE.CubeTextureLoader()
 // an array of objects whose rotation to update
 const objects = [];
 
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+
+function onPointerMove( event ) {
+
+	// calculate pointer position in normalized device coordinates
+	// (-1 to +1) for both components
+
+	pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+    console.log(pointer)
+}
+
+
+window.addEventListener( 'pointermove', onPointerMove );
+
 // plane
 const planeGeometry = new THREE.PlaneGeometry( 25, 25, 32, 32 );
 const planeMaterial = new THREE.MeshStandardMaterial( { color: 0xFFBBAC, side: THREE.DoubleSide } )
@@ -48,8 +65,6 @@ loader.load( './obj/Rocketship.glb', function ( glb ) {
             node.castShadow = true;
         }
     })
-
-    loop();
 
 }, undefined, function ( error ) {
 
@@ -110,15 +125,21 @@ controls.enableDamping = true;
 let rot = 0;
 
 const loop = () => {
-    rot += 0.01;
-    if(model.positionY > 0.05) {
-        model.position.set(0, 0, 0)
+    rot += 0.1;
+    if(model) {
+        if(model.position.y > 20) {
+            rot = 0;
+            model.position.set(0, 0, 0)
+        }
+        else {
+            model.position.set(0, rot, 0);
+        }
     }
-    else {
-        model.position.set(0, rot, 0);
-    }
+    
     controls.update();
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
     stats.update();
 }
+
+loop();
