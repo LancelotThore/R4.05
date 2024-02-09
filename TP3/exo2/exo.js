@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import Stats from 'three/addons/libs/stats.module.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // Pour créer l’affichage en haut à droite
 const container = document.getElementById('container');
@@ -32,13 +33,29 @@ plane.receiveShadow = true;
 plane.rotation.set(Math.PI * -0.5, 0, 0);
 scene.add( plane );
 
-const geometryBox = new THREE.BoxGeometry( 2.5, 5, 1 );
-const materialBox = new THREE.MeshBasicMaterial( {color: 0xACFBFF, side: THREE.DoubleSide} );
-const box = new THREE.Mesh( geometryBox, materialBox );
-box.translateY(3)
-box.castShadow = true;
-box.receiveShadow = false;
-scene.add( box );
+const loader = new GLTFLoader();
+
+let model;
+
+loader.load( './obj/Rocketship.glb', function ( glb ) {
+    model = glb.scene;
+	scene.add( model );
+    model.scale.set(0.5, 0.5, 0.5);
+    model.rotateY(Math.PI / 2);
+
+    model.traverse(function(node) {
+        if(node.isMesh) {
+            node.castShadow = true;
+        }
+    })
+
+    loop();
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
 
 // Camera
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight);
@@ -93,14 +110,15 @@ controls.enableDamping = true;
 let rot = 0;
 
 const loop = () => {
-    rot = rot + 0.01;
-    box.rotation.set(0, rot, 0)
+    rot += 0.01;
+    if(model.positionY > 0.05) {
+        model.position.set(0, 0, 0)
+    }
+    else {
+        model.position.set(0, rot, 0);
+    }
     controls.update();
     renderer.render(scene, camera);
-    window.requestAnimationFrame(loop);
-    scene.add(new THREE.AxesHelper(15));
-    scene.add(new THREE.PointLightHelper(light));
+    requestAnimationFrame(loop);
     stats.update();
 }
-
-loop();
